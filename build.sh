@@ -39,5 +39,6 @@ else
    run $PAKET_EXE install
 fi
 
+echo "Executing FAKE..."
 
 run $FAKE_EXE "$@" $FSIARGS $FSIARGS2 build.fsx

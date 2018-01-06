@@ -2,7 +2,7 @@
 
 [Toastr](https://github.com/CodeSeven/toastr) integration with Fable, implemented as [Elmish](https://github.com/fable-elmish/elmish) commands. 
 
-[DEMO]()
+[Live Demo](https://zaid-ajaj.github.io/Elmish.Toastr/)
 
 
 ## Installation
@@ -18,7 +18,7 @@ npm install toastr --save
 ```
 npm install css-loader style-loader --save-dev
 ```
-Now from your Webpack, use the loaders:
+- Now from your Webpack, use the loaders:
 ```
 {
     test: /\.(sa|c)ss$/,

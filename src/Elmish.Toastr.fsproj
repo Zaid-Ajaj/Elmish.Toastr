@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Elmish.Toastr</Description>
+    <Description>Toastr integration with Fable, implemented as Elmish commands</Description>
     <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Zaid-Ajaj/Elmish.Toastr</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/Zaid-Ajaj/Elmish.Toastr/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
     <PackageTags>fsharp;fable</PackageTags>
-    <Authors></Authors>
-    <Version></Version>
+    <Authors>Zaid Ajaj</Authors>
+    <Version>0.1.0</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

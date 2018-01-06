@@ -5,7 +5,7 @@ open System.IO
 open Fake
 
 let libPath = "./src"
-let testsPath = "./test"
+let testsPath = "./demo"
 
 let platformTool tool winTool =
   let tool = if isUnix then tool else winTool
@@ -84,7 +84,18 @@ Target "PublishNuget" (publish libPath)
 Target "CompileFableTestProject" <| fun _ ->
     run dotnetCli "fable npm-run build --port free" testsPath
 
+Target "Build" DoNothing
+
+
 "Clean"
   ==> "InstallNpmPackages"
   ==> "RestoreFableTestProject"
   ==> "RunLiveTests"
+
+"Clean"
+  ==> "InstallNpmPackages"
+  ==> "RestoreFableTestProject"
+  ==> "CompileFableTestProject"
+  ==> "Build"
+
+RunTargetOrDefault "Build"

@@ -106,7 +106,7 @@ let successToast : Cmd<_> =
     |> Toastr.onClick (fun _ -> log "Clicked")
     |> Toastr.onShown (fun _ -> log "Shown")
     |> Toastr.onHidden (fun _ -> log "Hidden")
-    |> Toastr.error
+    |> Toastr.success
 
 let errorToast : Cmd<_> =   
     Toastr.message "Oeps! Something went wrong"
