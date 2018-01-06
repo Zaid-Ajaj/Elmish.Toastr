@@ -20,22 +20,26 @@ type Message =
     | Info
     | Error
     | Warning
+    | SimpleMsg
+    | SimpleMsgWithTitle
+    | SimpleProgressBar
+    | Timeout
+    | OnClickSample
+    | CloseButton
+
 
 let update msg model = 
     match msg with
     | Success -> 
         let cmd =   
-          Toastr.message "Congrats! you did a great \"Job\""
+          Toastr.message "Your account is created"
           |> Toastr.title "Shiny title"
           |> Toastr.position TopRight
           |> Toastr.timeout 3000
-          |> Toastr.withPrograssBar
+          |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
-          |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
           |> Toastr.onClick (fun _ -> log "Clicked")
-          |> Toastr.onShown (fun _ -> log "Shown")
-          |> Toastr.onHidden (fun _ -> log "Hidden")
           |> Toastr.success
         
         model, cmd
@@ -46,7 +50,7 @@ let update msg model =
           |> Toastr.title "FYI"
           |> Toastr.position TopRight
           |> Toastr.timeout 3000
-          |> Toastr.withPrograssBar
+          |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
           |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
@@ -63,7 +67,7 @@ let update msg model =
           |> Toastr.title "So Sad!"
           |> Toastr.position TopRight
           |> Toastr.timeout 3000
-          |> Toastr.withPrograssBar
+          |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
           |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
@@ -79,7 +83,7 @@ let update msg model =
           |> Toastr.title "Heads up"
           |> Toastr.position TopRight
           |> Toastr.timeout 3000
-          |> Toastr.withPrograssBar
+          |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
           |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
@@ -89,54 +93,136 @@ let update msg model =
           |> Toastr.warning
         
         model, cmd       
+    | SimpleMsg ->
+        let cmd = 
+            Toastr.message "Your account is created"
+            |> Toastr.success
+        model, cmd
 
-let codeSample = """
-open Elmish
-open Elmish.Toastr
+    | SimpleMsgWithTitle ->
+        let cmd = 
+            Toastr.message "Your accound is created"
+            |> Toastr.title "Server"
+            |> Toastr.success
+        model, cmd
 
-let successToast : Cmd<_> = 
-    Toastr.message "Success message"
-    |> Toastr.title "Shiny title"
-    |> Toastr.position TopRight
-    |> Toastr.timeout 3000
-    |> Toastr.withPrograssBar
-    |> Toastr.hideEasing Easing.Swing
-    |> Toastr.showCloseButton
-    |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
-    |> Toastr.onClick (fun _ -> log "Clicked")
-    |> Toastr.onShown (fun _ -> log "Shown")
-    |> Toastr.onHidden (fun _ -> log "Hidden")
-    |> Toastr.success
+    | SimpleProgressBar -> 
+        let cmd = 
+            Toastr.message "Countdown has started"
+            |> Toastr.title "Be aware"
+            |> Toastr.withProgressBar
+            |> Toastr.warning
+        model, cmd
 
-let errorToast : Cmd<_> =   
-    Toastr.message "Oeps! Something went wrong"
-    |> Toastr.title "So Sad!"
-    (* other config *)
-    |> Toastr.error
+    | Timeout ->
+        let cmd = 
+            Toastr.message "Hide message in 5 seconds."
+            |> Toastr.title "Delayed"
+            |> Toastr.timeout 5000
+            |> Toastr.withProgressBar
+            |> Toastr.info
 
-// etc...
+        model, cmd
+    | CloseButton ->
+        let cmd = 
+            Toastr.message "I have a close button"
+            |> Toastr.title "Close"
+            |> Toastr.showCloseButton
+            |> Toastr.error
+        model, cmd
+
+    | OnClickSample ->
+        let cmd = 
+            Toastr.message "See your browser console"
+            |> Toastr.title "Click Me"
+            |> Toastr.onClick (fun _ -> printfn "Clicked")
+            |> Toastr.info
+
+        model, cmd
+
+   
+   
+
+let simpleMessage = """
+Toastr.message "Your account is created."
+|> Toastr.success
 """  
-let view _ dispatch = 
-        let spacing = Style [Margin 5]
-        div [ ]
-            [ h1 [ ] [ str "Elmish.Toastr" ]
-              button 
-               [ spacing; ClassName "btn btn-success"; OnClick (fun _ -> dispatch Success) ] 
-               [ str "Success" ] 
-              button 
-               [ spacing; ClassName "btn btn-info";OnClick (fun _ -> dispatch Info) ] 
-               [ str "Info" ] 
-              button 
-               [ spacing; ClassName "btn btn-warning";OnClick (fun _ -> dispatch Warning) ] 
-               [ str "Warning" ] 
-              button 
-               [ spacing; ClassName "btn btn-danger"; OnClick (fun _ -> dispatch Error) ] 
-               [ str "Error" ]
-              br []
 
-              pre [ Style [ Margin 5;BackgroundColor "lightgray"; BorderRadius 20; Padding 20 ] ]
-                  [ code [  ]
-                         [ str codeSample ] ] ] 
+let simpleMsgTitle = """
+Toastr.message "Your accound is created"
+|> Toastr.title "Server"
+|> Toastr.success
+"""
+
+let simpleProgressBar = """
+Toastr.message "Countdown has started"
+|> Toastr.title "Be aware"
+|> Toastr.withProgressBar
+|> Toastr.warning
+"""
+
+let timeoutSample = """
+Toastr.message "Hide message in 5 seconds."
+|> Toastr.title "Delayed"
+|> Toastr.timeout 5000
+|> Toastr.withProgressBar
+|> Toastr.info
+"""
+let closeButtonSample = """
+Toastr.message "I have a close button"
+|> Toastr.title "Close"
+|> Toastr.showCloseButton
+|> Toastr.error
+"""
+let onClickSample = """
+Toastr.message "See your browser console"
+|> Toastr.title "Click me"
+|> Toastr.onClick (fun _ -> printfn "Clicked")
+|> Toastr.info
+"""
+
+let view _ dispatch = 
+
+    let sample title snippet msg = 
+       let btn = 
+        button [ Style [ MarginLeft 20 ]; ClassName "btn btn-info"; OnClick (fun _ -> dispatch msg) ] 
+               [ str "Run" ]
+       
+       div [ Style [ TextAlign "left"; Display "table"; Margin "0 auto" ] ]
+           [ h4 [ ] [ str title; span [] [ btn ] ]
+             pre [ ]
+                 [ code [ ]
+                        [ str snippet ] ] ]
+
+    let spacing = Style [Margin 5]
+    div [ Style [ TextAlign "center" ] ]
+        [ h1 [ ] [ str "Elmish.Toastr" ]
+          button 
+           [ spacing; ClassName "btn btn-success"; OnClick (fun _ -> dispatch Success) ] 
+           [ str "Success" ] 
+          button 
+           [ spacing; ClassName "btn btn-info";OnClick (fun _ -> dispatch Info) ] 
+           [ str "Info" ] 
+          button 
+           [ spacing; ClassName "btn btn-warning";OnClick (fun _ -> dispatch Warning) ] 
+           [ str "Warning" ] 
+          button 
+           [ spacing; ClassName "btn btn-danger"; OnClick (fun _ -> dispatch Error) ] 
+           [ str "Error" ]
+          br []
+          hr [ ]
+          sample "Simple message" simpleMessage SimpleMsg
+          hr [ ]
+          sample "Message with title" simpleMsgTitle SimpleMsgWithTitle
+          hr [ ]
+          sample "Progress bar" simpleProgressBar SimpleProgressBar 
+          hr [ ]
+          sample "Close Button" closeButtonSample CloseButton
+          hr [ ]
+          sample "Timeout" timeoutSample Timeout 
+          hr [ ]
+          sample "Interactive" onClickSample OnClickSample
+          hr [ ] ]
 
 
 

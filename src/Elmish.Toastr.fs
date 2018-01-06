@@ -29,7 +29,8 @@ type ToastrOptions =
     abstract preventDuplicates : bool with get,set
     abstract showDuration : int with get, set
     abstract hideDuration : int with get,set
-    abstract extendedTimeOut : int with get,set
+    [<Emit("$0.extendedTimeOut{{=$1}}")>]
+    abstract extendedTimeout : int with get,set
     [<Emit("$0.positionClass{{=$1}}")>]
     abstract position : ToastPosition with get, set
     abstract escapeHtml : bool with get, set
@@ -58,21 +59,16 @@ module Toastr =
         Options: ToastrOptions 
     }
 
-    let defaultMsg = { Message = ""; Title = ""; Options = createEmpty<ToastrOptions> }
-
-    let private successToast (msg: string) (options: ToastrOptions)  : unit = import "success" "toastr" 
+    let defaultMsg() = { Message = ""; Title = ""; Options = createEmpty<ToastrOptions> }
     let private successToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "success" "toastr" 
-
-    let private errorToast (msg: string) (options: ToastrOptions)  : unit = import "error" "toastr" 
     let private errorToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "error" "toastr" 
-
-    let private infoToast (msg: string) (options: ToastrOptions)  : unit = import "info" "toastr" 
     let private infoToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "info" "toastr" 
-
-    let private warningToast (msg: string) (options: ToastrOptions) : unit = import "warning" "toastr" 
     let private warningToastWithTitle (msg: string) (title: string) (options: ToastrOptions)  : unit = import "warning" "toastr" 
 
-    let message msg = { defaultMsg with Message = msg  }
+    /// Sets the message of toast
+    let message msg = { defaultMsg() with Message = msg  }
+    
+    /// Sets the title of the toast
     let title title msg = { msg with Title = title }
 
     let timeout timeout msg = 
@@ -85,6 +81,10 @@ module Toastr =
         options.position <- pos
         { msg with Options = options }
 
+    let extendedTimout t msg = 
+        let options = msg.Options
+        options.extendedTimeout <- t
+        { msg with Options = options }
     let onClick f msg = 
         let options = msg.Options
         options.onclick <- f
@@ -110,7 +110,7 @@ module Toastr =
         options.closeButton <- true
         { msg with Options = options }
         
-    let withPrograssBar msg = 
+    let withProgressBar msg = 
         let options = msg.Options
         options.progressBar <- true
         { msg with Options = options }
@@ -125,42 +125,35 @@ module Toastr =
         options.hideEasing <- e
         { msg with Options = options }
 
-    let options (opt: ToastrOptions) msg = 
+    let setOptions (opt: ToastrOptions) msg = 
         { msg with Options = opt }
 
     [<Emit("Object.assign({}, $0, $1)")>]
     let private mergeObjects x y = jsNative
     
+    let mutable private options : ToastrOptions =  import "options" "toastr"
+    
     /// Overrides global options
-    let overrideOptions (options: ToastrOptions) : unit = 
-        let mutable globalOptions : ToastrOptions = import "options" "toastr"
-        globalOptions <- mergeObjects globalOptions options
+    let overrideOptions (opts: ToastrOptions) : unit = 
+        options <- mergeObjects options opts
     
     /// Immediately remove current toasts without using animation
     let remove() : unit = import "remove" "toastr"
     
     /// Remove current toasts using animation
     let clear() : unit = import "clear" "toastr"
+    /// Shows a success toast
     let success (msg: ToastrMsg) : Cmd<_> = 
         [fun _ ->
-            if System.String.IsNullOrEmpty(msg.Title) 
-            then successToast msg.Message msg.Options
-            else successToastWithTitle msg.Message msg.Title msg.Options]
-
+            printfn "%s" (toJson msg) 
+            successToastWithTitle msg.Message msg.Title msg.Options]
+    
+    /// Shows an error taost
     let error (msg: ToastrMsg) :  Cmd<_> = 
-        [fun _ ->
-            if System.String.IsNullOrEmpty(msg.Title) 
-            then errorToast msg.Message msg.Options
-            else errorToastWithTitle msg.Message msg.Title msg.Options]
-
+        [fun _ -> errorToastWithTitle msg.Message msg.Title msg.Options]
+    /// Shows an info toast
     let info (msg: ToastrMsg) : Cmd<_> = 
-        [fun _ ->
-            if System.String.IsNullOrEmpty(msg.Title) 
-            then infoToast msg.Message msg.Options
-            else infoToastWithTitle msg.Message msg.Title msg.Options]
-
+        [fun _ -> infoToastWithTitle msg.Message msg.Title msg.Options]
+    /// Shows a warning toast
     let warning (msg: ToastrMsg) : Cmd<_> = 
-        [fun _ ->
-            if System.String.IsNullOrEmpty(msg.Title) 
-            then warningToast msg.Message msg.Options
-            else warningToastWithTitle msg.Message msg.Title msg.Options]
+        [fun _ -> warningToastWithTitle msg.Message msg.Title msg.Options]
