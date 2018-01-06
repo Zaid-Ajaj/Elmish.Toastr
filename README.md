@@ -1,4 +1,4 @@
-# Elmish.Toastr
+# Elmish.Toastr [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?colorB=green)](https://www.nuget.org/packages/Elmish.Toastr)
 
 [Toastr](https://github.com/CodeSeven/toastr) integration with Fable, implemented as [Elmish](https://github.com/fable-elmish/elmish) commands. 
 
@@ -14,7 +14,7 @@ paket add nuget Elmish.Toastr --project /path/to/Project.fsproj
 ```
 npm install toastr --save
 ```
-- Because this library directly uses and imports the CSS dependency from the npm toastr package, you will need the appropriate CSS loaders for Webpack: `css-loader` and `style-loader`, install them:
+- Because this library directly uses and imports the CSS dependency from the npm toastr package, you will need the appropriate CSS loaders for Webpack: `css-loader` and `style-loader`, install them :
 ```
 npm install css-loader style-loader --save-dev
 ```
@@ -41,7 +41,7 @@ let successToast : Cmd<_> =
     |> Toastr.title "Shiny title"
     |> Toastr.position TopRight
     |> Toastr.timeout 3000
-    |> Toastr.withPrograssBar
+    |> Toastr.withProgressBar
     |> Toastr.hideEasing Easing.Swing
     |> Toastr.showCloseButton
     |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
