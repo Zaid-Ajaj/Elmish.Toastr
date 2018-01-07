@@ -48,10 +48,10 @@ let successToast : Cmd<_> =
     |> Toastr.onClick (fun _ -> log "Clicked")
     |> Toastr.onShown (fun _ -> log "Shown")
     |> Toastr.onHidden (fun _ -> log "Hidden")
-    |> Toastr.error
+    |> Toastr.success
 
 let update msg model = 
     match msg with
-    | ShowSuccess -> model, successToastr
+    | ShowSuccess -> model, successToast
     | OtherMsg -> model, Cmd.none
 ```
