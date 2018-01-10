@@ -116,7 +116,7 @@ let update msg model =
         let cmd = 
             Toastr.message "Hide message in 5 seconds."
             |> Toastr.title "Delayed"
-            |> Toastr.timeout 20000
+            |> Toastr.timeout 5000
             |> Toastr.withProgressBar
             |> Toastr.info
 
