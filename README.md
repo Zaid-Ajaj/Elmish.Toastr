@@ -41,7 +41,7 @@ type Msg =
     | Clicked
     | Closed
 
-let successToast : Cmd<_> = 
+let successToast : Cmd<Msg> = 
     Toastr.message "Success message"
     |> Toastr.title "Shiny title"
     |> Toastr.position TopRight
@@ -49,7 +49,6 @@ let successToast : Cmd<_> =
     |> Toastr.withProgressBar
     |> Toastr.hideEasing Easing.Swing
     |> Toastr.showCloseButton
-    // dispatch a new message from events
     |> Toastr.closeButtonClicked Closed
     |> Toastr.onClick Clicked 
     |> Toastr.success
