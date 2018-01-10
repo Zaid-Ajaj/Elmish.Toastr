@@ -36,6 +36,11 @@ See the demo app for reference. Create toastr commands and use them in the Elmis
 open Elmish
 open Elmish.Toastr
 
+type Msg = 
+    | ShowSuccess
+    | Clicked
+    | Closed
+
 let successToast : Cmd<_> = 
     Toastr.message "Success message"
     |> Toastr.title "Shiny title"
@@ -44,14 +49,29 @@ let successToast : Cmd<_> =
     |> Toastr.withProgressBar
     |> Toastr.hideEasing Easing.Swing
     |> Toastr.showCloseButton
-    |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
-    |> Toastr.onClick (fun _ -> log "Clicked")
-    |> Toastr.onShown (fun _ -> log "Shown")
-    |> Toastr.onHidden (fun _ -> log "Hidden")
+    // dispatch a new message from events
+    |> Toastr.closeButtonClicked Closed
+    |> Toastr.onClick Clicked 
     |> Toastr.success
 
 let update msg model = 
     match msg with
-    | ShowSuccess -> model, successToast
-    | OtherMsg -> model, Cmd.none
+    | ShowSuccess -> 
+        model, successToast
+
+    | Clicked ->
+        let infoToast = 
+            Toastr.message "You clicked previous toast"
+            |> Toastr.title "Clicked"
+            |> Toastr.info
+        model, infoToast
+
+    | Closed ->
+        let infoToast = 
+            Toastr.message "You clicked the close button"
+            |> Toastr.title "Close Clicked"
+            |> Toastr.info
+        model, infoToast
+    | _ -> 
+        model, Cmd.none
 ```

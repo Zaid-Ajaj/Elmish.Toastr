@@ -53,13 +53,20 @@ module Toastr =
 
     importAll "toastr/build/toastr.min.css"
 
-    type ToastrMsg = { 
+    [<Pojo>]
+    type ToastrMsg<'a> = { 
         Message : string; 
         Title: string; 
         Options: ToastrOptions 
+        mutable Dispatcher : Option<'a -> unit>
     }
 
-    let defaultMsg() = { Message = ""; Title = ""; Options = createEmpty<ToastrOptions> }
+    let defaultMsg() = { 
+        Message = ""; 
+        Title = ""; 
+        Options = createEmpty<ToastrOptions>
+        Dispatcher = None 
+    }
     let private successToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "success" "toastr" 
     let private errorToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "error" "toastr" 
     let private infoToastWithTitle (msg: string) (title: string) (options: ToastrOptions)   : unit = import "info" "toastr" 
@@ -74,59 +81,72 @@ module Toastr =
     let timeout timeout msg = 
         let options = msg.Options
         options.timeout <- timeout
-        { msg with Options = options }
+        msg
 
     let position pos msg = 
         let options = msg.Options
         options.position <- pos
-        { msg with Options = options }
+        msg
 
     let extendedTimout t msg = 
         let options = msg.Options
         options.extendedTimeout <- t
-        { msg with Options = options }
-    let onClick f msg = 
-        let options = msg.Options
-        options.onclick <- f
-        { msg with Options = options }
+        msg
 
-    let onShown f msg = 
+    let onClick (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
-        options.onShown <- f
-        { msg with Options = options }  
+        options.onclick <- fun () -> 
+            match msg.Dispatcher with
+            | Some dispatcher -> dispatcher nextMsg
+            | None -> ()
+        msg
+
+    let onShown (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
+        let options = msg.Options
+        options.onShown <- fun () -> 
+            match msg.Dispatcher with
+            | Some dispatcher -> dispatcher nextMsg
+            | None -> ()
+        msg 
 
     let tapToDismiss msg = 
         let options = msg.Options
         options.tapToDismiss <- true
-        { msg with Options = options }  
+        msg
 
-    let onHidden f msg = 
+    let onHidden (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
-        options.onHidden <- f
-        { msg with Options = options } 
+        options.onHidden <- fun () -> 
+            match msg.Dispatcher with
+            | Some dispatcher -> dispatcher nextMsg
+            | None -> ()
+        msg 
 
     let showCloseButton msg = 
         let options = msg.Options
         options.closeButton <- true
-        { msg with Options = options }
+        msg
         
     let withProgressBar msg = 
         let options = msg.Options
         options.progressBar <- true
-        { msg with Options = options }
+        msg
     
-    let closeButtonClicked f msg = 
+    let closeButtonClicked (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
-        options.onCloseClick <- f
-        { msg with Options = options }        
+        options.onCloseClick <- fun () -> 
+            match msg.Dispatcher with
+            | Some dispatcher -> 
+                printfn "Dispatch found: %s" (toJson nextMsg)
+                dispatcher nextMsg
+            | None -> ()
+        msg     
 
     let hideEasing e msg = 
         let options = msg.Options
         options.hideEasing <- e
-        { msg with Options = options }
+        msg
 
-    let setOptions (opt: ToastrOptions) msg = 
-        { msg with Options = opt }
 
     [<Emit("Object.assign({}, $0, $1)")>]
     let private mergeObjects x y = jsNative
@@ -143,17 +163,23 @@ module Toastr =
     /// Remove current toasts using animation
     let clear() : unit = import "clear" "toastr"
     /// Shows a success toast
-    let success (msg: ToastrMsg) : Cmd<_> = 
-        [fun _ ->
-            printfn "%s" (toJson msg) 
+    let success (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
+        [fun dispatch -> 
+            msg.Dispatcher <- Some dispatch 
             successToastWithTitle msg.Message msg.Title msg.Options]
     
     /// Shows an error taost
-    let error (msg: ToastrMsg) :  Cmd<_> = 
-        [fun _ -> errorToastWithTitle msg.Message msg.Title msg.Options]
+    let error (msg: ToastrMsg<'msg>) :  Cmd<'msg> = 
+        [fun dispatch -> 
+            msg.Dispatcher <- Some dispatch 
+            errorToastWithTitle msg.Message msg.Title msg.Options]
     /// Shows an info toast
-    let info (msg: ToastrMsg) : Cmd<_> = 
-        [fun _ -> infoToastWithTitle msg.Message msg.Title msg.Options]
+    let info (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
+        [fun dispatch -> 
+            msg.Dispatcher <- Some dispatch 
+            infoToastWithTitle msg.Message msg.Title msg.Options]
     /// Shows a warning toast
-    let warning (msg: ToastrMsg) : Cmd<_> = 
-        [fun _ -> warningToastWithTitle msg.Message msg.Title msg.Options]
+    let warning (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
+        [fun dispatch -> 
+            msg.Dispatcher <- Some dispatch 
+            warningToastWithTitle msg.Message msg.Title msg.Options]

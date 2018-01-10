@@ -19,13 +19,15 @@ type Message =
     | Success
     | Info
     | Error
+    | Clicked
     | Warning
     | SimpleMsg
     | SimpleMsgWithTitle
     | SimpleProgressBar
     | Timeout
-    | OnClickSample
+    | Interactive
     | CloseButton
+    | CloseButtonClicked
 
 
 let update msg model = 
@@ -39,7 +41,7 @@ let update msg model =
           |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
-          |> Toastr.onClick (fun _ -> log "Clicked")
+          |> Toastr.onClick Clicked
           |> Toastr.success
         
         model, cmd
@@ -53,10 +55,6 @@ let update msg model =
           |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
-          |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
-          |> Toastr.onClick (fun _ -> log "Clicked")
-          |> Toastr.onShown (fun _ -> log "Shown")
-          |> Toastr.onHidden (fun _ -> log "Hidden")
           |> Toastr.info
         
         model, cmd  
@@ -70,10 +68,6 @@ let update msg model =
           |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
-          |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
-          |> Toastr.onClick (fun _ -> log "Clicked")
-          |> Toastr.onShown (fun _ -> log "Shown")
-          |> Toastr.onHidden (fun _ -> log "Hidden")
           |> Toastr.error
         
         model, cmd         
@@ -86,10 +80,6 @@ let update msg model =
           |> Toastr.withProgressBar
           |> Toastr.hideEasing Easing.Swing
           |> Toastr.showCloseButton
-          |> Toastr.closeButtonClicked (fun _ -> log "Close Clicked")
-          |> Toastr.onClick (fun _ -> log "Clicked")
-          |> Toastr.onShown (fun _ -> log "Shown")
-          |> Toastr.onHidden (fun _ -> log "Hidden")
           |> Toastr.warning
         
         model, cmd       
@@ -128,14 +118,31 @@ let update msg model =
             Toastr.message "I have a close button"
             |> Toastr.title "Close"
             |> Toastr.showCloseButton
+            |> Toastr.closeButtonClicked CloseButtonClicked
             |> Toastr.error
         model, cmd
 
-    | OnClickSample ->
+    | CloseButtonClicked ->
         let cmd = 
-            Toastr.message "See your browser console"
+            Toastr.message "You clicked the close button"
+            |> Toastr.title "Close Clicked"
+            |> Toastr.info
+        model, cmd
+
+    | Interactive ->
+        let cmd = 
+            Toastr.message "Click me to dispatch 'Clicked' message"
             |> Toastr.title "Click Me"
-            |> Toastr.onClick (fun _ -> printfn "Clicked")
+            |> Toastr.onClick Clicked
+            |> Toastr.info
+
+        model, cmd
+
+
+    | Clicked ->
+        let cmd = 
+            Toastr.message "I was summoned by a message"
+            |> Toastr.title "Clicked"
             |> Toastr.info
 
         model, cmd
@@ -174,11 +181,21 @@ Toastr.message "I have a close button"
 |> Toastr.showCloseButton
 |> Toastr.error
 """
-let onClickSample = """
-Toastr.message "See your browser console"
-|> Toastr.title "Click me"
-|> Toastr.onClick (fun _ -> printfn "Clicked")
-|> Toastr.info
+let interactive = """
+| Interactive ->
+    let cmd = 
+        Toastr.message "Click me to dispatch 'Clicked' message"
+        |> Toastr.title "Click Me"
+        |> Toastr.onClick Clicked 
+        |> Toastr.info
+    model, cmd
+
+| Clicked ->
+    let cmd = 
+        Toastr.message "I was summoned by a message"
+        |> Toastr.title "Clicked"
+        |> Toastr.info
+    model, cmd
 """
 
 let view _ dispatch = 
@@ -221,11 +238,12 @@ let view _ dispatch =
           hr [ ]
           sample "Timeout" timeoutSample Timeout 
           hr [ ]
-          sample "Interactive" onClickSample OnClickSample
+          sample "Interactive" interactive Interactive
           hr [ ] ]
 
 
 
 Program.mkProgram init update view 
 |> Program.withReact "root"
+|> Program.withConsoleTrace
 |> Program.run
