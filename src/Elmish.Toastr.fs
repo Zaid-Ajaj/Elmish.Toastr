@@ -78,11 +78,13 @@ module Toastr =
     /// Sets the title of the toast
     let title title msg = { msg with Title = title }
 
+    /// Defines the duration in ms after which the toast starts to disappear
     let timeout timeout msg = 
         let options = msg.Options
         options.timeout <- timeout
         msg
 
+    /// Sets the position of the toastr relative to the screen
     let position pos msg = 
         let options = msg.Options
         options.position <- pos
@@ -93,6 +95,7 @@ module Toastr =
         options.extendedTimeout <- t
         msg
 
+    /// Configures a message to be sent to the dispatch loop when the toast is clicked
     let onClick (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
         options.onclick <- fun () -> 
@@ -101,6 +104,7 @@ module Toastr =
             | None -> ()
         msg
 
+    /// Configures a message to be sent to the dispatch loop when the toast is shown on screen
     let onShown (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
         options.onShown <- fun () -> 
@@ -114,6 +118,8 @@ module Toastr =
         options.tapToDismiss <- true
         msg
 
+    /// Configures a message to be sent to the dispatch loop when the toast has disappeared
+
     let onHidden (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
         options.onHidden <- fun () -> 
@@ -122,16 +128,19 @@ module Toastr =
             | None -> ()
         msg 
 
+    /// Configures the toast to show a close button 
     let showCloseButton msg = 
         let options = msg.Options
         options.closeButton <- true
         msg
         
+    /// Shows the progress bar of how long the toast will take before it disappears
     let withProgressBar msg = 
         let options = msg.Options
         options.progressBar <- true
         msg
     
+    /// Configures a message to be sent to the dispatch loop when the close button of toast is clicked
     let closeButtonClicked (nextMsg: 'a) (msg: ToastrMsg<'a>) = 
         let options = msg.Options
         options.onCloseClick <- fun () -> 
@@ -162,6 +171,15 @@ module Toastr =
     
     /// Remove current toasts using animation
     let clear() : unit = import "clear" "toastr"
+    
+    /// Remove current toasts using animation
+    let clearAll : Cmd<_> = 
+        [fun _ -> clear()]
+
+    /// Remove current toasts using animation
+    let removeAll : Cmd<_> = 
+        [fun _ -> remove()]
+
     /// Shows a success toast
     let success (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
         [fun dispatch -> 

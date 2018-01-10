@@ -26,9 +26,10 @@ type Message =
     | SimpleProgressBar
     | Timeout
     | Interactive
+    | ClearAll
+    | RemoveAll
     | CloseButton
     | CloseButtonClicked
-
 
 let update msg model = 
     match msg with
@@ -70,7 +71,14 @@ let update msg model =
           |> Toastr.showCloseButton
           |> Toastr.error
         
-        model, cmd         
+        model, cmd      
+    
+    | ClearAll -> 
+        model, Toastr.clearAll   
+
+    | RemoveAll ->
+        model, Toastr.removeAll         
+    
     | Warning ->
         let cmd =   
           Toastr.message "Something is about to go down..."
@@ -108,7 +116,7 @@ let update msg model =
         let cmd = 
             Toastr.message "Hide message in 5 seconds."
             |> Toastr.title "Delayed"
-            |> Toastr.timeout 5000
+            |> Toastr.timeout 20000
             |> Toastr.withProgressBar
             |> Toastr.info
 
@@ -226,6 +234,14 @@ let view _ dispatch =
           button 
            [ spacing; ClassName "btn btn-danger"; OnClick (fun _ -> dispatch Error) ] 
            [ str "Error" ]
+
+          button 
+           [ spacing; ClassName "btn btn-primary"; OnClick (fun _ -> dispatch RemoveAll) ] 
+           [ str "Remove All" ]
+          button 
+           [ spacing; ClassName "btn btn-primary"; OnClick (fun _ -> dispatch ClearAll) ] 
+           [ str "Clear All" ]
+
           br []
           hr [ ]
           sample "Simple message" simpleMessage SimpleMsg
