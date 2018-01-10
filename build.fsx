@@ -14,6 +14,7 @@ let platformTool tool winTool =
   |> function Some t -> t | _ -> failwithf "%s not found" tool
 
 let nodeTool = platformTool "node" "node.exe"
+let npmTool = platformTool "npm" "npm.cmd"
 
 let mutable dotnetCli = "dotnet"
 
@@ -52,8 +53,8 @@ Target "Clean" <| fun _ ->
 Target "InstallNpmPackages" (fun _ ->
   printfn "Node version:"
   run nodeTool "--version" __SOURCE_DIRECTORY__
-  run "npm" "--version" __SOURCE_DIRECTORY__
-  run "npm" "install" __SOURCE_DIRECTORY__
+  run npmTool "--version" __SOURCE_DIRECTORY__
+  run npmTool "install" __SOURCE_DIRECTORY__
 )
 
 Target "RestoreFableTestProject" <| fun _ ->
