@@ -167,10 +167,10 @@ module Toastr =
         options <- mergeObjects options opts
     
     /// Immediately remove current toasts without using animation
-    let remove() : unit = import "remove" "toastr"
+    let private remove() : unit = import "remove" "toastr"
     
     /// Remove current toasts using animation
-    let clear() : unit = import "clear" "toastr"
+    let private clear() : unit = import "clear" "toastr"
     
     /// Remove current toasts using animation
     let clearAll : Cmd<_> = 
@@ -191,11 +191,13 @@ module Toastr =
         [fun dispatch -> 
             msg.Dispatcher <- Some dispatch 
             errorToastWithTitle msg.Message msg.Title msg.Options]
+            
     /// Shows an info toast
     let info (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
         [fun dispatch -> 
             msg.Dispatcher <- Some dispatch 
             infoToastWithTitle msg.Message msg.Title msg.Options]
+            
     /// Shows a warning toast
     let warning (msg: ToastrMsg<'msg>) : Cmd<'msg> = 
         [fun dispatch -> 
