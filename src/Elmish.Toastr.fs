@@ -53,7 +53,6 @@ module Toastr =
 
     importAll "toastr/build/toastr.min.css"
 
-    [<Pojo>]
     type ToastrMsg<'a> = { 
         Message : string; 
         Title: string; 
@@ -145,9 +144,7 @@ module Toastr =
         let options = msg.Options
         options.onCloseClick <- fun () -> 
             match msg.Dispatcher with
-            | Some dispatcher -> 
-                printfn "Dispatch found: %s" (toJson nextMsg)
-                dispatcher nextMsg
+            | Some dispatcher -> dispatcher nextMsg
             | None -> ()
         msg     
 

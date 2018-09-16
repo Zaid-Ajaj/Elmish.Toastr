@@ -1,52 +1,36 @@
 var path = require("path");
-var webpack = require("webpack");
-var fableUtils = require("fable-utils");
 
-
-function resolve(filePath) {
-  return path.join(__dirname, filePath)
-}
-
-var babelOptions = fableUtils.resolveBabelOptions({
+var babelOptions = {
   presets: [
     ["env", {
-      "targets": {
-        "browsers": ["last 2 versions"]
-      },
-      "modules": false
+        "modules": false,
+        "useBuiltIns": "usage",
     }]
-  ],
-  plugins: ["transform-runtime"]
-});
+  ]
+};
 
-var isProduction = process.argv.indexOf("-p") >= 0;
-console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
-
-module.exports = {
-  devtool: "source-map",
-  entry: resolve('./demo/App.fsproj'),
-  output: {
-    filename: 'bundle.js',
-    path: resolve('./public'),
-  },
-  resolve: {
-    modules: [resolve("./node_modules/")]
-  },
-  devServer: {
-    contentBase: resolve('./public'),
-    port: 8080
-  },
-  module: {
-    rules: [
+module.exports = function (evn, argv) {
+  var mode = argv.mode || "development";
+  var isProduction = mode === "production";
+  console.log("Webpack mode: " + mode);
+ 
+  return {
+   mode: mode,
+   devtool: isProduction ? false : "eval-source-map",
+   entry: './demo/App.fsproj',
+   output: {
+     filename: 'bundle.js',
+     path: path.join(__dirname, './public'),
+   },
+   devServer: {
+     contentBase: './public',
+     port: 8080
+   },
+   module: {
+     rules: [
       {
         test: /\.fs(x|proj)?$/,
-        use: {
-          loader: "fable-loader",
-          options: {
-            babel: babelOptions,
-            define: isProduction ? [] : ["DEBUG"]
-          }
-        }
+        use: "fable-loader"
       },
       {
         test: /\.js$/,
@@ -59,10 +43,11 @@ module.exports = {
       {
         test: /\.(sa|c)ss$/,
         use: [
-          "style-loader",
-          "css-loader"
+            "style-loader",
+            "css-loader"
         ]
       }
-    ]
-  }
-};
+     ]
+   }
+  };
+ }

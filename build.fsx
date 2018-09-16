@@ -13,18 +13,22 @@ let platformTool tool winTool =
   |> ProcessHelper.tryFindFileOnPath
   |> function Some t -> t | _ -> failwithf "%s not found" tool
 
-let nodeTool = platformTool "node" "node.exe"
-let npmTool = platformTool "npm" "npm.cmd"
+let nodeTool = "node"
+let npmTool = "npm"
 
 let mutable dotnetCli = "dotnet"
 
-let run cmd args workingDir =
-  let result =
-    ExecProcess (fun info ->
-      info.FileName <- cmd
-      info.WorkingDirectory <- workingDir
-      info.Arguments <- args) TimeSpan.MaxValue
-  if result <> 0 then failwithf "'%s %s' failed" cmd args
+let run fileName args workingDir =
+    printfn "CWD: %s" workingDir
+    let fileName, args =
+        if EnvironmentHelper.isUnix
+        then fileName, args else "cmd", ("/C " + fileName + " " + args)
+    let ok =
+        execProcess (fun info ->
+            info.FileName <- fileName
+            info.WorkingDirectory <- workingDir
+            info.Arguments <- args) TimeSpan.MaxValue
+    if not ok then failwith (sprintf "'%s> %s %s' task failed" workingDir fileName args)
 
 let delete file = 
     if File.Exists(file) 
