@@ -8,8 +8,8 @@
 
 | Fable version | Package |
 | ------------- | ------------- |
-| 1.3.x  |  [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Fable.SimpleXml)  |
-| 2.0-beta  | [![Nuget](https://img.shields.io/nuget/vpre/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Fable.SimpleXml)   |
+| 1.3.x  |  [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Elmish.Toastr)  |
+| 2.0-beta  | [![Nuget](https://img.shields.io/nuget/vpre/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Elmish.Toastr)   |
 
 ## Installation
 - Install this library from nuget
