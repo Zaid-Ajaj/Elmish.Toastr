@@ -1,4 +1,4 @@
-# Elmish.Toastr [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?colorB=green)](https://www.nuget.org/packages/Elmish.Toastr) [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Elmish.Toastr) 
+# Elmish.Toastr [![Build Status](https://travis-ci.org/Zaid-Ajaj/Elmish.Toastr.svg?branch=master)](https://travis-ci.org/Zaid-Ajaj/Elmish.Toastr) [![Nuget](https://img.shields.io/nuget/v/Elmish.Toastr.svg?maxAge=0&colorB=brightgreen)](https://www.nuget.org/packages/Elmish.Toastr) 
 
 [Toastr](https://github.com/CodeSeven/toastr) integration with Fable, implemented as [Elmish](https://github.com/fable-elmish/elmish) commands. 
 
