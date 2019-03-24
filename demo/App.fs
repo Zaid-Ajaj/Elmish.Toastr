@@ -4,8 +4,8 @@ open Elmish
 open Elmish.React
 open Elmish.Toastr
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.Core
 
 [<Emit("console.log($0)")>]
@@ -258,8 +258,7 @@ let view _ dispatch =
           hr [ ] ]
 
 
-
 Program.mkProgram init update view 
-|> Program.withReact "root"
+|> Program.withReactSynchronous "root"
 |> Program.withConsoleTrace
 |> Program.run

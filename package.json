@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "webpack-cli --mode production",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server"
   },
   "repository": {
@@ -10,25 +10,23 @@
   },
   "devDependencies": {
     "gh-pages": "^1.1.0",
-    "react": "^15.6.2",
-    "react-dom": "^15.6.2",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
     "remotedev": "^0.2.7",
     "toastr": "^2.1.2",
     "css-loader": "^0.28.8",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.19.1",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
-    "fable-loader": "^2.0.0-alpha-003",
-    "fable-utils": "^1.0.6",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "@babel/core": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.0",
+    "fable-compiler": "^2.2.0-beta-019",
+    "fable-loader": "^2.1.5",
     "loglevel": "^1.6.0",
     "qunitjs": "^2.4.1",
-    "webpack": "^4.8.1",
-    "webpack-cli": "^3.0.1",
-    "webpack-dev-server": "^3.1.4"
-  },
-  "dependencies": {
-    "@babel/core": "^7.0.1"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
   }
 }
