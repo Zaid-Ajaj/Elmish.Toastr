@@ -213,14 +213,14 @@ let view _ dispatch =
         button [ Style [ MarginLeft 20 ]; ClassName "btn btn-info"; OnClick (fun _ -> dispatch msg) ] 
                [ str "Run" ]
        
-       div [ Style [ TextAlign "left"; Display "table"; Margin "0 auto" ] ]
+       div [ Style [ TextAlign TextAlignOptions.Left; Display DisplayOptions.Table; Margin "0 auto" ] ]
            [ h4 [ ] [ str title; span [] [ btn ] ]
              pre [ ]
                  [ code [ ]
                         [ str snippet ] ] ]
 
     let spacing = Style [Margin 5]
-    div [ Style [ TextAlign "center" ] ]
+    div [ Style [ TextAlign TextAlignOptions.Center ] ]
         [ h1 [ ] [ str "Elmish.Toastr" ]
           button 
            [ spacing; ClassName "btn btn-success"; OnClick (fun _ -> dispatch Success) ] 
