@@ -2,7 +2,7 @@ var ghPages = require("gh-pages");
 
 var packageUrl = "https://github.com/Zaid-Ajaj/Feliz.git";
 
-console.log("Publishing to " + packageUrl);
+console.log("Publishing to ", packageUrl);
 
 ghPages.publish("public", {
     repo: packageUrl
